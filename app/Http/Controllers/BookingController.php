@@ -160,9 +160,10 @@ class BookingController extends Controller
      */
     public function endJob(Request $request)
     {
-        $data = $request->all();
+        // $data = $request->all();
+        // change
 
-        $response = $this->repository->endJob($data);
+        $response = $this->repository->endJob($request->all());
 
         return response($response);
 
@@ -194,23 +195,25 @@ class BookingController extends Controller
 
     public function distanceFeed(Request $request)
     {
+        // use empty conditions
+
         $data = $request->all();
 
-        if (isset($data['distance']) && $data['distance'] != "") {
+        if (isset($data['distance']) && !empty($data['distance'])) {
             $distance = $data['distance'];
         } else {
             $distance = "";
         }
-        if (isset($data['time']) && $data['time'] != "") {
+        if (isset($data['time']) && !empty($data['time'])) {
             $time = $data['time'];
         } else {
             $time = "";
         }
-        if (isset($data['jobid']) && $data['jobid'] != "") {
+        if (isset($data['jobid']) && !empty($data['jobid'])) {
             $jobid = $data['jobid'];
         }
 
-        if (isset($data['session_time']) && $data['session_time'] != "") {
+        if (isset($data['session_time']) && !empty($data['session_time'])) {
             $session = $data['session_time'];
         } else {
             $session = "";
@@ -235,19 +238,21 @@ class BookingController extends Controller
             $by_admin = 'no';
         }
 
-        if (isset($data['admincomment']) && $data['admincomment'] != "") {
+        if (isset($data['admincomment']) && !empty($data['admincomment'])) {
             $admincomment = $data['admincomment'];
         } else {
             $admincomment = "";
         }
         if ($time || $distance) {
-
-            $affectedRows = Distance::where('job_id', '=', $jobid)->update(array('distance' => $distance, 'time' => $time));
+            // where('job_id', '=', $jobid)
+            // where('job_id',$jobid)
+            // change
+            $affectedRows = Distance::where('job_id', $jobid)->update(array('distance' => $distance, 'time' => $time));
         }
 
         if ($admincomment || $session || $flagged || $manually_handled || $by_admin) {
 
-            $affectedRows1 = Job::where('id', '=', $jobid)->update(array('admin_comments' => $admincomment, 'flagged' => $flagged, 'session_time' => $session, 'manually_handled' => $manually_handled, 'by_admin' => $by_admin));
+            $affectedRows1 = Job::where('id',$jobid)->update(array('admin_comments' => $admincomment, 'flagged' => $flagged, 'session_time' => $session, 'manually_handled' => $manually_handled, 'by_admin' => $by_admin));
 
         }
 
@@ -256,6 +261,7 @@ class BookingController extends Controller
 
     public function reopen(Request $request)
     {
+        // change
         $data = $request->all();
         $response = $this->repository->reopen($data);
 

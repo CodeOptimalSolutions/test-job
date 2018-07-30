@@ -2115,8 +2115,8 @@ class BookingRepository extends BaseRepository
         $jobid = $request['jobid'];
         $userid = $request['userid'];
 
-        $job = Job::find($jobid);
-        $job = $job->toArray();
+        $job = Job::find($jobid)->toArray();
+        // $job = $job->toArray();
 
         $data = array();
         $data['created_at'] = date('Y-m-d H:i:s');
@@ -2135,7 +2135,7 @@ class BookingRepository extends BaseRepository
 //        $this->logger->addInfo('USER #' . Auth::user()->id . ' reopen booking #: ' . $jobid);
 
         if ($job['status'] != 'timedout') {
-            $affectedRows = Job::where('id', '=', $jobid)->update($datareopen);
+            $affectedRows = Job::where('id',$jobid)->update($datareopen);
             $new_jobid = $jobid;
         } else {
             $job['status'] = 'pending';

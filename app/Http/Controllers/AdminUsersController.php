@@ -59,7 +59,6 @@ class AdminUsersController extends Controller
     public function show($id)
     {
         $user = User::with(['languages.language', 'userMeta', 'towns', 'average', 'usersBlacklist'])->find($id);
-
         return response($user);
     }
 
@@ -116,7 +115,11 @@ class AdminUsersController extends Controller
 
     public static function destroy($id, $request)
     {
-        DB::table('loginlogs')->where('user_id', '=', $id)->delete();
+        // DB::table('loginlogs')->where('user_id', '=', $id)->delete();
+        // ->where('user_id', '=', $id) same work  where('user_id', $id)
+
+        // check
+        DB::table('loginlogs')->where('user_id', $id)->delete();
         UserMeta::where('user_id', $id)->delete();
         UserTowns::where('user_id', $id)->delete();
         $user = User::findOrFail($id);
@@ -135,7 +138,7 @@ class AdminUsersController extends Controller
     public static function disable($id)
     {
         $user = User::findOrFail($id);
-        $user->status = '0';
+        $user->status = 0;
         $user->save();
 
     }
