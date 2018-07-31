@@ -20,35 +20,35 @@ class AdminUsersController extends Controller
 
     public static function index(Request $request)
     {
-        if ($request->input('limit') || !session()->has('l5cp-adminuser-limit')) {
+        if ($request->limit || !session()->has('l5cp-adminuser-limit')) {
             session(['l5cp-adminuser-limit' => $request->input('limit', 15)]);
         }
 
-        if (null !== $request->input('q') || !session()->has('l5cp-adminuser-search')) {
+        if (null !== $request->q || !session()->has('l5cp-adminuser-search')) {
             session(['l5cp-adminuser-search' => $request->input('q', '')]);
         }
 
-        if (null !== $request->input('sort') || !session()->has('l5cp-adminuser-sort')) {
+        if (null !== $request->sort || !session()->has('l5cp-adminuser-sort')) {
             session(['l5cp-adminuser-sort' => $request->input('sort', 'name')]);
         }
 
 
-        if (null !== $request->input('order') || !session()->has('l5cp-adminuser-order')) {
+        if (null !== $request->order || !session()->has('l5cp-adminuser-order')) {
             session(['l5cp-adminuser-order' => $request->input('order', 'desc')]);
         }
 
         //Query
         $users = User::with('jobs', 'userMeta')
-            ->where('name', 'LIKE', '%' . $request->input('q') . '%');
-        if (($request->input('q') != "") || ($request->input('q') != NULL)) {
-            $users->where('name', 'LIKE', '%' . $request->input('q') . '%');
-            if (null !== $request->input('q')) {
-                $users->orWhere('email', 'LIKE', '%' . $request->input('q') . '%');
+            ->where('name', 'LIKE', '%' . $request->q . '%');
+        if (($request->q != "") || ($request->q != NULL)) {
+            $users->where('name', 'LIKE', '%' . $request->q . '%');
+            if (null !== $request->q) {
+                $users->orWhere('email', 'LIKE', '%' . $request->q . '%');
             }
         }
         $users->where(function ($orQuery) {
-            $orQuery->orWhere('user_type', '=', env('ADMIN_ROLE_ID'));
-            $orQuery->orWhere('user_type', '=', env('SUPERADMIN_ROLE_ID'));
+            $orQuery->orWhere('user_type', env('ADMIN_ROLE_ID'));
+            $orQuery->orWhere('user_type', env('SUPERADMIN_ROLE_ID'));
         });
 
         $users = $users->paginate(session('l5cp-adminuser-limit'));
@@ -59,12 +59,13 @@ class AdminUsersController extends Controller
     public function show($id)
     {
         $user = User::with(['languages.language', 'userMeta', 'towns', 'average', 'usersBlacklist'])->find($id);
+
         return response($user);
     }
 
     public static function create($request)
     {
-        $languages = Language::where('active', '1')->orderBy('language')->get();
+        $languages = Language::where('active', 1)->orderBy('language')->get();
         $towns = UserTowns::all();
         $translators = User::where('user_type', 2)->get();
         return view('admin.user.admin_create_edit', ['languages' => $languages, 'towns' => $towns, 'translators' => $translators])->withSuccess(trans('validation.created'));
@@ -86,7 +87,7 @@ class AdminUsersController extends Controller
 
     public static function edit($id, Request $request)
     {
-        $languages = Language::where('active', '1')->orderBy('language')->get();
+        $languages = Language::where('active', 1)->orderBy('language')->get();
 
         $towns = Towns::all();
         $userTowns = new UserTowns();
@@ -115,22 +116,18 @@ class AdminUsersController extends Controller
 
     public static function destroy($id, $request)
     {
-        // DB::table('loginlogs')->where('user_id', '=', $id)->delete();
-        // ->where('user_id', '=', $id) same work  where('user_id', $id)
-
-        // check
         DB::table('loginlogs')->where('user_id', $id)->delete();
         UserMeta::where('user_id', $id)->delete();
         UserTowns::where('user_id', $id)->delete();
-        $user = User::findOrFail($id);
-        $user->delete();
+        $user = User::findOrFail($id)->delete();
+       
         return ['Deleted'];
     }
 
     public static function enable($id)
     {
         $user = User::findOrFail($id);
-        $user->status = '1';
+        $user->status = 1;
         $user->save();
 
     }
@@ -151,7 +148,7 @@ class AdminUsersController extends Controller
             return 'Admin';
         } else {
             $role = Role::findOrFail($user->user_type);
-            return @$role->name;
+            return $role->name;
         }
     }
 
@@ -224,16 +221,16 @@ class AdminUsersController extends Controller
         }
 
 
-
-        if ($request['status'] == '1') {
-            if ($model->status != '1') {
-//                AdminHelper::enable($model->id);
-            }
-        } else {
-            if ($model->status != '0') {
-//                AdminHelper::disable($model->id);
-            }
-        }
+        //unnecessary code 
+//         if ($request['status'] == 1) {
+//             if ($model->status != 1) {
+// //                AdminHelper::enable($model->id);
+//             }
+//         } else {
+//             if ($model->status != 0) {
+// //                AdminHelper::disable($model->id);
+//             }
+//         }
         return $model ? $model : false;
     }
 

@@ -152,7 +152,7 @@ class StatisticsController extends Controller
     private function cancelledSessions(Request $request)
     {
         $data = [];
-        $translators = User::where('user_type', '2')->get();
+        $translators = User::where('user_type', 2)->get();
         $translators = collect($translators)->pluck('id')->toArray();
         $cancelled_sessions = Translator::whereNotNull('cancel_at')->whereIn('user_id', $translators);
 

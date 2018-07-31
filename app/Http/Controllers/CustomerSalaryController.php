@@ -17,7 +17,6 @@ class CustomerSalaryController extends Controller
 
     public function store(Request $request)
     {
-        $salaries = $request->all();
-        $this->repository->createOrUpdate($salaries);
+        $this->repository->createOrUpdate($request->all());
     }
 }

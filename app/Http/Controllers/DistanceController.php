@@ -19,9 +19,8 @@ class DistanceController extends Controller
      */
     public function store(Request $request, DistanceRepository $distanceRepository)
     {
-        $post_data = $request->all();
-        $user = $request->__authenticatedUser;
-        $response = $distanceRepository->store($post_data, $user);
+        
+        $response = $distanceRepository->store($request->all(), $request->__authenticatedUser);
 
         return response($response);
 

@@ -65,9 +65,9 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
+        
 
-        $response = $this->repository->store($request->__authenticatedUser, $data);
+        $response = $this->repository->store($request->__authenticatedUser, $request->all());
 
         return response($response);
 
@@ -80,9 +80,9 @@ class BookingController extends Controller
      */
     public function update($id, Request $request)
     {
-        $data = $request->all();
+        
         $cuser = $request->__authenticatedUser;
-        $response = $this->repository->updateJob($id, array_except($data, ['_token', 'submit']), $cuser);
+        $response = $this->repository->updateJob($id, array_except($request->all(), ['_token', 'submit']), $cuser);
 
         return response($response);
     }
@@ -94,9 +94,9 @@ class BookingController extends Controller
     public function immediateJobEmail(Request $request)
     {
         $adminSenderEmail = config('app.adminemail');
-        $data = $request->all();
+       
 
-        $response = $this->repository->storeJobEmail($data);
+        $response = $this->repository->storeJobEmail($request->all());
 
         return response($response);
     }
@@ -122,20 +122,18 @@ class BookingController extends Controller
      */
     public function acceptJob(Request $request)
     {
-        $data = $request->all();
-        $user = $request->__authenticatedUser;
+       
 
-        $response = $this->repository->acceptJob($data, $user);
+    $response = $this->repository->acceptJob($request->all(), $request->__authenticatedUser);
 
         return response($response);
     }
 
     public function acceptJobWithId(Request $request)
     {
-        $data = $request->get('job_id');
-        $user = $request->__authenticatedUser;
+        
 
-        $response = $this->repository->acceptJobWithId($data, $user);
+    $response = $this->repository->acceptJobWithId($request->get('job_id'), $request->__authenticatedUser);
 
         return response($response);
     }
@@ -146,10 +144,9 @@ class BookingController extends Controller
      */
     public function cancelJob(Request $request)
     {
-        $data = $request->all();
-        $user = $request->__authenticatedUser;
+        
 
-        $response = $this->repository->cancelJobAjax($data, $user);
+        $response = $this->repository->cancelJobAjax($request->all(), $request->__authenticatedUser);
 
         return response($response);
     }
@@ -160,8 +157,6 @@ class BookingController extends Controller
      */
     public function endJob(Request $request)
     {
-        // $data = $request->all();
-        // change
 
         $response = $this->repository->endJob($request->all());
 
@@ -171,9 +166,9 @@ class BookingController extends Controller
 
     public function customerNotCall(Request $request)
     {
-        $data = $request->all();
+        
 
-        $response = $this->repository->customerNotCall($data);
+        $response = $this->repository->customerNotCall($request->all());
 
         return response($response);
 
@@ -185,35 +180,33 @@ class BookingController extends Controller
      */
     public function getPotentialJobs(Request $request)
     {
-        $data = $request->all();
-        $user = $request->__authenticatedUser;
+        
+        
 
-        $response = $this->repository->getPotentialJobs($user);
+        $response = $this->repository->getPotentialJobs($request->__authenticatedUser);
 
         return response($response);
     }
 
     public function distanceFeed(Request $request)
     {
-        // use empty conditions
-
         $data = $request->all();
 
-        if (isset($data['distance']) && !empty($data['distance'])) {
+        if (isset($data['distance']) && $data['distance'] != "") {
             $distance = $data['distance'];
         } else {
             $distance = "";
         }
-        if (isset($data['time']) && !empty($data['time'])) {
+        if (isset($data['time']) && $data['time'] != "") {
             $time = $data['time'];
         } else {
             $time = "";
         }
-        if (isset($data['jobid']) && !empty($data['jobid'])) {
+        if (isset($data['jobid']) && $data['jobid'] != "") {
             $jobid = $data['jobid'];
         }
 
-        if (isset($data['session_time']) && !empty($data['session_time'])) {
+        if (isset($data['session_time']) && $data['session_time'] != "") {
             $session = $data['session_time'];
         } else {
             $session = "";
@@ -238,21 +231,19 @@ class BookingController extends Controller
             $by_admin = 'no';
         }
 
-        if (isset($data['admincomment']) && !empty($data['admincomment'])) {
+        if (isset($data['admincomment']) && $data['admincomment'] != "") {
             $admincomment = $data['admincomment'];
         } else {
             $admincomment = "";
         }
         if ($time || $distance) {
-            // where('job_id', '=', $jobid)
-            // where('job_id',$jobid)
-            // change
+
             $affectedRows = Distance::where('job_id', $jobid)->update(array('distance' => $distance, 'time' => $time));
         }
 
         if ($admincomment || $session || $flagged || $manually_handled || $by_admin) {
 
-            $affectedRows1 = Job::where('id',$jobid)->update(array('admin_comments' => $admincomment, 'flagged' => $flagged, 'session_time' => $session, 'manually_handled' => $manually_handled, 'by_admin' => $by_admin));
+            $affectedRows1 = Job::where('id', $jobid)->update(array('admin_comments' => $admincomment, 'flagged' => $flagged, 'session_time' => $session, 'manually_handled' => $manually_handled, 'by_admin' => $by_admin));
 
         }
 
@@ -261,9 +252,8 @@ class BookingController extends Controller
 
     public function reopen(Request $request)
     {
-        // change
-        $data = $request->all();
-        $response = $this->repository->reopen($data);
+        
+        $response = $this->repository->reopen($request->all());
 
         return response($response);
     }

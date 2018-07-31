@@ -47,8 +47,8 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-        $this->departmentRepository->createOrUpdate(null, $data);
+        
+        $this->departmentRepository->createOrUpdate(null, $request->all());
     }
 
     /**
@@ -73,8 +73,8 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = $request->all();
-        $this->departmentRepository->createOrUpdate($id, $data);
+       
+        $this->departmentRepository->createOrUpdate($id, $request->all());
     }
 
     /**

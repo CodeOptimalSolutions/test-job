@@ -47,8 +47,8 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-        $this->companyRepository->createOrUpdate(null, $data);
+        
+        $this->companyRepository->createOrUpdate(null, $request->all());
     }
 
     /**
@@ -73,8 +73,8 @@ class CompanyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = $request->all();
-        $this->companyRepository->createOrUpdate($id, $data);
+       
+        $this->companyRepository->createOrUpdate($id, $request->all());
     }
 
     /**

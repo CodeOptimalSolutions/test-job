@@ -235,7 +235,7 @@ class UserController extends Controller
 
         $logger->addInfo('USER #' . $request->__authenticatedUser->id . ' delete user with data:  ', ['id' => $id, 'user' => $user->toArray()]);
         $user->delete();
-        DB::table('login_logs')->where('user_id', '=', $id)->delete();
+        DB::table('login_logs')->where('user_id', $id)->delete();
 
         return response('success');
     }

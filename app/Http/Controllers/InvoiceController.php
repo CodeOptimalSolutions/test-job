@@ -53,7 +53,6 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-        $this->repository->createOrUpdate($data);
+        $this->repository->createOrUpdate($request->all());
     }
 }

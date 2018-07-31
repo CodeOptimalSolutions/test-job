@@ -91,7 +91,7 @@ trait HasRoleAndPermission
                     $this->roles = $this->roles->merge($role->descendants());
 
             $this->roles = $this->roles->filter(function($role) use ($deniedRoles){
-                return !$deniedRoles->contains($role);
+                return $deniedRoles->contains($role);
             });
         }
         return  $this->roles;

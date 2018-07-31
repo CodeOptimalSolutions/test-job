@@ -97,7 +97,6 @@ class ExportController extends Controller
             $list = $this->exportRepository->prepareFile($id, $request->get('type'));
         else
             $list = ExportList::with('exports')->find($id);
-
         return response($list);
     }
 

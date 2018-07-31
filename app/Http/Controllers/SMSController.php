@@ -42,8 +42,8 @@ class SMSController extends Controller
 
         if ( $request->input('sms_key') == env('SMS_COMM_KEY') ) {
             // Find the translator
-            // $fromNumber = $request->input('from');
-            $translator = User::where('mobile', $request->input('from'))->first();
+            $fromNumber = $request->input('from');
+            $translator = User::where('mobile', $fromNumber)->first();
 
             if (!$translator) {
                 // No translator found with this number, so treating it as anon

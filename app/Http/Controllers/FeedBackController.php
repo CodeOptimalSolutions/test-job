@@ -11,9 +11,7 @@ class FeedBackController extends Controller
     /*Function to save the feedback*/
     public function store(Request $request, FeedBackRepository $feedBackRepository)
     {
-        $post_data = $request->all();
-        $user = $request->__authenticatedUser;
-        $response = $feedBackRepository->makeFeedBack($post_data, $user);
+        $response = $feedBackRepository->makeFeedBack($request->all(),$request->__authenticatedUser);
 
         return response($response);
 
